@@ -1,9 +1,9 @@
 {
-  "name": "packe",
+  "name": "porsche",
   "version": "0.0.1",
   "description": "",
   "bin": {
-    "packe": "./bin/packe.js"
+    "porsche": "./bin/porsche.js"
   },
   "files": [
     "bin",
@@ -11,9 +11,11 @@
     "lib"
   ],
   "keywords": [
-    "packe",
-    "react",
+    "porsche",
+    "build",
+    "dev",
     "cli",
+    "react",
     "webpack"
   ],
   "authors": [
@@ -25,12 +27,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bubkoo/packe.git"
+    "url": "git+https://github.com/bubkoo/porsche.git"
   },
   "bugs": {
-    "url": "https://github.com/bubkoo/packe/issues"
+    "url": "https://github.com/bubkoo/porsche/issues"
   },
-  "homepage": "https://github.com/bubkoo/packe#readme",
+  "homepage": "https://github.com/bubkoo/porsche#readme",
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-eslint": "^7.2.3",

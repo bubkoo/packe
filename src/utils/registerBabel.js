@@ -3,8 +3,8 @@ import { join } from 'path';
 const cwd = process.cwd();
 const files = [
   'webpack.config.js',
-  '.packe.js',
-  '.packe.mock.js',
+  '.porsche.js',
+  '.porsche.mock.js',
   join(cwd, 'mock'),
   join(cwd, 'src'),
 ];

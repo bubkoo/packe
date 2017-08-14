@@ -11,7 +11,7 @@ import readFile from './readFile';
 export default function parseConfig(paths) {
   const { resolveApp } = paths;
 
-  const rcFilename = '.packerc';
+  const rcFilename = '.porscherc';
   const jsFilename = `${rcFilename}.js`;
   const ymlFilename = `${rcFilename}.yml`;
   const yamlFilename = `${rcFilename}.yaml`;

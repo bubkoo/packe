@@ -20,7 +20,7 @@ import applyWebpackConfig from './utils/applyWebpackConfig';
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 
 const argv = require('yargs')
-  .usage('Usage: packe build [options]')
+  .usage('Usage: porsche build [options]')
   .option('debug', {
     type: 'boolean',
     describe: 'Build without compress',
@@ -59,10 +59,9 @@ function getOutputPath(config) {
 }
 
 // /User/dan/app/build/static/js/main.82be8.js => /static/js/main.js
-function removeFileNameHash(fileName) {
-  return fileName
-    .replace(appBuild, '')
-    .replace(/\/?(.*)(\.\w+)(\.js|\.css)/, (match, p1, p2, p3) => p1 + p3);
+function removeFileNameHash(filename) {
+  const parts = filename.replace(appBuild, '').split('.');
+  return parts.splice(parts.length - 2, 1).join('.');
 }
 
 function printErrors(summary, errors) {
