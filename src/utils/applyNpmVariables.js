@@ -1,4 +1,5 @@
 import getIn from 'lodash.get';
+import isPlainObject from 'is-plain-object';
 
 
 function getPath(str) {
@@ -21,8 +22,16 @@ export default function applyNpmVariables(obj, pkg) {
     });
   }
 
-  return Object.keys(obj).reduce((memo, key) => {
-    memo[key] = applyNpmVariables(obj[key], pkg);
-    return memo;
-  }, {});
+  if (Array.isArray(obj)) {
+    return obj.map(value => applyNpmVariables(value, pkg));
+  }
+
+  if (isPlainObject(obj)) {
+    return Object.keys(obj).reduce((memo, key) => {
+      memo[key] = applyNpmVariables(obj[key], pkg);
+      return memo;
+    }, {});
+  }
+
+  return obj;
 }

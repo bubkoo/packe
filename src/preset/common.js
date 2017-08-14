@@ -1,7 +1,6 @@
 import { join } from 'path';
 import { existsSync } from 'fs';
 import webpack from 'webpack';
-import autoprefixer from 'autoprefixer';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
@@ -17,7 +16,7 @@ export const node = {
 
 export const baseSvgLoader = {
   test: /\.svg$/,
-  loader: 'file',
+  loader: 'file-loader',
   options: {
     name: 'static/[name].[hash:8].[ext]',
   },
@@ -88,7 +87,7 @@ export function getFirstRules({ paths, babelOptions }) {
     },
     {
       test: /\.(js|jsx)$/,
-      loader: 'babel',
+      loader: 'babel-loader',
       include: paths.appSrc,
       options: babelOptions,
     },
@@ -99,7 +98,7 @@ export function getLastRules({ paths, babelOptions }) {
   return [
     {
       test: /\.html$/,
-      loader: 'file',
+      loader: 'file-loader',
       options: { name: '[name].[ext]' },
     },
     {
@@ -107,7 +106,7 @@ export function getLastRules({ paths, babelOptions }) {
       include: paths.appSrc,
       use: [
         {
-          loader: 'babel',
+          loader: 'babel-loader',
           options: babelOptions,
         },
         {
@@ -140,7 +139,7 @@ export function getCSSRules(env, { config, paths, cssLoaders, theme }) {
       test: /\.css$/,
       include: includeTest.bind(null, paths.appSrc),
       use: [
-        'style',
+        'style-loader',
         ...cssLoaders.own,
       ],
     },
@@ -148,10 +147,10 @@ export function getCSSRules(env, { config, paths, cssLoaders, theme }) {
       test: /\.less$/,
       include: includeTest.bind(null, paths.appSrc),
       use: [
-        'style',
+        'style-loader',
         ...cssLoaders.own,
         {
-          loader: 'less',
+          loader: 'less-loader',
           options: {
             modifyVars: theme,
           },
@@ -162,7 +161,7 @@ export function getCSSRules(env, { config, paths, cssLoaders, theme }) {
       test: /\.css$/,
       include: includeTest.bind(null, paths.appNodeModules),
       use: [
-        'style',
+        'style-loader',
         ...cssLoaders.nodeModules,
       ],
     },
@@ -170,10 +169,10 @@ export function getCSSRules(env, { config, paths, cssLoaders, theme }) {
       test: /\.less$/,
       include: includeTest.bind(null, paths.appNodeModules),
       use: [
-        'style',
+        'style-loader',
         ...cssLoaders.nodeModules,
         {
-          loader: 'less',
+          loader: 'less-loader',
           options: {
             modifyVars: theme,
           },
@@ -190,7 +189,7 @@ export function getCSSRules(env, { config, paths, cssLoaders, theme }) {
         test: /\.css$/,
         include,
         use: [
-          'style',
+          'style-loader',
           ...cssLoaders.noCSSModules,
         ],
       },
@@ -198,10 +197,10 @@ export function getCSSRules(env, { config, paths, cssLoaders, theme }) {
         test: /\.less$/,
         include,
         use: [
-          'style',
+          'style-loader',
           ...cssLoaders.noCSSModules,
           {
-            loader: 'less',
+            loader: 'less-loader',
             options: {
               modifyVars: theme,
             },
@@ -219,7 +218,7 @@ export function getCSSRules(env, { config, paths, cssLoaders, theme }) {
         test: /\.scss$/,
         include: includeTest.bind(null, paths.appSrc),
         use: [
-          'style',
+          'style-loader',
           ...cssLoaders.own,
           {
             loader: 'sass',
@@ -231,7 +230,7 @@ export function getCSSRules(env, { config, paths, cssLoaders, theme }) {
         test: /\.scss$/,
         include: includeTest.bind(null, paths.appNodeModules),
         use: [
-          'style',
+          'style-loader',
           ...cssLoaders.nodeModules,
           {
             loader: 'sass',
@@ -249,7 +248,7 @@ export function getCSSRules(env, { config, paths, cssLoaders, theme }) {
           test: /\.scss$/,
           include,
           use: [
-            'style',
+            'style-loader',
             ...cssLoaders.noCSSModules,
             {
               loader: 'sass',
@@ -264,7 +263,7 @@ export function getCSSRules(env, { config, paths, cssLoaders, theme }) {
   if (env === 'production') {
     rules.forEach((rule) => {
       rule.use = ExtractTextPlugin.extract({
-        fallback: 'style',
+        fallback: 'style-loader',
         use: rule.use.slice(1),
       });
     });
@@ -316,23 +315,6 @@ export function getCommonPlugins({ config, paths, appBuild, NODE_ENV }) {
     }));
   }
 
-  plugins.push(new webpack.LoaderOptionsPlugin({
-    options: {
-      context: __dirname,
-      postcss: [
-        autoprefixer(config.autoprefixer || {
-          browsers: [
-            '>1%',
-            'last 4 versions',
-            'Firefox ESR',
-            'not ie < 9', // React doesn't support IE8 anyway
-          ],
-        }),
-        ...(config.extraPostCSSPlugins ? config.extraPostCSSPlugins : []),
-      ],
-    },
-  }));
-
   return plugins;
 }
 
@@ -341,7 +323,7 @@ export function addExtraBabelIncludes(config, paths, includes = [], babelOptions
     config.module.rules.push({
       test: /\.(js|jsx)$/,
       include: join(paths.appDirectory, include),
-      loader: 'babel',
+      loader: 'babel-loader',
       options: babelOptions,
     });
   });

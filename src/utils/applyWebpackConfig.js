@@ -1,6 +1,8 @@
 import { existsSync } from 'fs';
 import { resolve } from 'path';
 
+require('./registerBabel');
+
 export default function applyWebpackConfig(config, env) {
   const filePath = resolve('webpack.config.js');
   if (existsSync(filePath)) {

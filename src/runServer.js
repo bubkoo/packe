@@ -32,7 +32,7 @@ const paths = getPaths(cwd);
 
 
 require('yargs') // eslint-disable-line
-  .usage('Usage: roadhog server [options]')
+  .usage('Usage: porsche server [options]')
   .help('h')
   .argv;
 
@@ -188,7 +188,7 @@ function init() {
   rcConfig = loadRcConfig(paths, process.env.NODE_ENV);
 
   if (rcConfig.dllPlugin && !fs.existsSync(paths.dllManifest)) {
-    console.log(chalk.red('Failed to start the server, since you have enabled dllPlugin, you should run `roadhog buildDll` before `roadhog server`.'));
+    console.log(chalk.red('Failed to start the server, since you have enabled dllPlugin, you should run `porsche buildDll` before `porsche server`.'));
     process.exit(1);
   }
 

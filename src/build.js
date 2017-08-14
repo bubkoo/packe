@@ -118,7 +118,7 @@ export default function build(options) {
 
   return new Promise((resolve) => {
     recursive(appBuild, (err, filePaths) => {
-      const previousSizeMap = getFileSizeMap(filePaths);
+      const previousSizeMap = getFileSizeMap(filePaths, appBuild);
       fs.emptyDirSync(appBuild);
       innerBuild(previousSizeMap, resolve, options);
     });

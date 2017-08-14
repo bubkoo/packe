@@ -2,8 +2,6 @@ import isPlainObject from 'is-plain-object';
 import readFile from './readFile';
 import parseConfig from './parseConfig';
 import applyNpmVariables from './applyNpmVariables';
-import './registerBabel';
-
 
 function mergeEnv(target, source) {
   Object.keys(source).forEach((key) => {

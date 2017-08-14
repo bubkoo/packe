@@ -5,57 +5,60 @@ import chalk from 'chalk';
 import yaml from 'js-yaml';
 import stripJson from 'strip-json-comments';
 import parseJSON from 'parse-json-pretty';
+import * as fileNames from './fileNames';
 import readFile from './readFile';
+
+require('./registerBabel');
 
 
 export default function parseConfig(paths) {
   const { resolveApp } = paths;
+  const { rcConfigFileName,
+    jsConfigFileName,
+    ymlConfigFileName,
+    yamlConfigFileName,
+  } = fileNames;
 
-  const rcFilename = '.porscherc';
-  const jsFilename = `${rcFilename}.js`;
-  const ymlFilename = `${rcFilename}.yml`;
-  const yamlFilename = `${rcFilename}.yaml`;
+  const rcConfigFilePath = resolveApp(rcConfigFileName);
+  const jsConfigFilePath = resolveApp(jsConfigFileName);
+  const ymlConfigFilePath = resolveApp(ymlConfigFileName);
+  const yamlConfigFilePath = resolveApp(yamlConfigFileName);
 
-  const rcFilepath = resolveApp(rcFilename);
-  const jsFilepath = resolveApp(jsFilename);
-  const ymlFilepath = resolveApp(ymlFilename);
-  const yamlFilepath = resolveApp(yamlFilename);
-
-  const rcFileExists = existsSync(rcFilepath);
-  const jsFileExists = existsSync(jsFilepath);
-  const ymlFileExists = existsSync(ymlFilepath);
-  const yamlFileExists = existsSync(yamlFilepath);
+  const rcConfigFileExists = existsSync(rcConfigFilePath);
+  const jsConfigFileExists = existsSync(jsConfigFilePath);
+  const ymlConfigFileExists = existsSync(ymlConfigFilePath);
+  const yamlConfigFileExists = existsSync(yamlConfigFilePath);
 
   if (process.env.NODE_ENV === 'development') {
     const exists = [
-      [jsFilename, jsFileExists],
-      [rcFilename, rcFileExists],
-      [ymlFilename, ymlFileExists],
-      [yamlFilename, yamlFileExists],
+      [jsConfigFileName, jsConfigFileExists],
+      [rcConfigFileName, rcConfigFileExists],
+      [ymlConfigFileName, ymlConfigFileExists],
+      [yamlConfigFileName, yamlConfigFileExists],
     ].filter(item => item[1]);
 
     if (exists.length > 1) {
-      const filenames = exists.map(item => `"${item[0]}"`);
-      console.log(chalk.yellow(`Warning: Multiple config files: ${filenames.join(', ')}.`));
-      console.log(chalk.yellow(`Only ${filenames[0]} will be applied.`));
+      const names = exists.map(item => `"${item[0]}"`);
+      console.log(chalk.yellow(`Warning: Multiple config files: ${names.join(', ')}.`));
+      console.log(chalk.yellow(`Only ${names[0]} will be applied.`));
       console.log();
     }
   }
 
-  if (jsFileExists) {
-    return require(jsFilepath); // eslint-disable-line
+  if (jsConfigFileExists) {
+    return require(jsConfigFilePath); // eslint-disable-line
   }
 
-  if (rcFileExists) {
-    return parseJSON(stripJson(readFile(rcFilepath)), rcFilename);
+  if (rcConfigFileExists) {
+    return parseJSON(stripJson(readFile(rcConfigFilePath)), rcConfigFileName);
   }
 
-  if (ymlFileExists) {
-    return yaml.safeLoad(readFile(ymlFilepath), { filename: ymlFilename });
+  if (ymlConfigFileExists) {
+    return yaml.safeLoad(readFile(ymlConfigFilePath), { filename: ymlConfigFileName });
   }
 
-  if (yamlFileExists) {
-    return yaml.safeLoad(readFile(yamlFilepath), { filename: yamlFilename });
+  if (yamlConfigFileExists) {
+    return yaml.safeLoad(readFile(yamlConfigFilePath), { filename: yamlConfigFileName });
   }
 
   return {};

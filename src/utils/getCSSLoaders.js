@@ -1,3 +1,5 @@
+import autoprefixer from 'autoprefixer';
+
 export default function getCSSLoaders(config) {
   const { disableCSSSourceMap, disableCSSModules } = config;
 
@@ -12,12 +14,12 @@ export default function getCSSLoaders(config) {
 
   if (disableCSSModules) {
     own.push({
-      loader: 'css',
+      loader: 'css-loader',
       options,
     });
   } else {
     own.push({
-      loader: 'css',
+      loader: 'css-loader',
       options: {
         ...options,
         modules: true,
@@ -27,17 +29,31 @@ export default function getCSSLoaders(config) {
   }
 
   nodeModules.push({
-    loader: 'css',
+    loader: 'css-loader',
     options,
   });
 
   noCSSModules.push({
-    loader: 'css',
+    loader: 'css-loader',
     options,
   });
 
   const postcssLoader = {
-    loader: 'postcss',
+    loader: 'postcss-loader',
+    options: {
+      plugins: [
+        autoprefixer(config.autoprefixer || {
+          browsers: [
+            '>1%',
+            'last 4 versions',
+            'Firefox ESR',
+            'not ie < 9', // React doesn't support IE8 anyway
+          ],
+        }),
+        ...(config.extraPostCSSPlugins || []),
+      ],
+    }
+    ,
   };
 
   noCSSModules.push(postcssLoader);

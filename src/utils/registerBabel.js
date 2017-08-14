@@ -1,10 +1,14 @@
 import { join } from 'path';
+import {
+  jsConfigFileName,
+  mockConfigFileName,
+} from './fileNames';
 
 const cwd = process.cwd();
 const files = [
   'webpack.config.js',
-  '.porsche.js',
-  '.porsche.mock.js',
+  jsConfigFileName,
+  mockConfigFileName,
   join(cwd, 'mock'),
   join(cwd, 'src'),
 ];

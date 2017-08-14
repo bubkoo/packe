@@ -76,7 +76,7 @@ export default function build(options) {
     rimraf.sync(paths.appBabelCache);
 
     recursive(appBuild, (err, filePaths) => {
-      const previousSizeMap = getFileSizeMap(filePaths);
+      const previousSizeMap = getFileSizeMap(filePaths, appBuild);
       fs.emptyDirSync(appBuild);
       innerBuild(previousSizeMap, resolve, options);
     });

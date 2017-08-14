@@ -5,9 +5,9 @@ import chalk from 'chalk';
 import filesize from 'filesize';
 import stripAnsi from 'strip-ansi';
 import { sync as gzipSize } from 'gzip-size';
-import padRight from 'lodash.padright';
 import readFile from './readFile';
 import removeFilenameHash from './removeFilenameHash';
+
 
 // 1024, 2048 => "(+1 KB)"
 function getDifferenceLabel(currentSize, previousSize) {
@@ -32,6 +32,7 @@ export default function printFileSizes({ stats, previousSizeMap, appBuild, outpu
       const size = gzipSize(content);
       const previousSize = previousSizeMap[removeFilenameHash(asset.name)];
       const difference = getDifferenceLabel(size, previousSize);
+
       return {
         size,
         name: path.basename(asset.name),
@@ -50,7 +51,7 @@ export default function printFileSizes({ stats, previousSizeMap, appBuild, outpu
   assets.forEach((asset) => {
     const length = stripAnsi(asset.sizeLabel).length;
     const sizeLabel = length < maxLength
-      ? padRight(asset.sizeLabel, maxLength - length, ' ')
+      ? asset.sizeLabel + ' '.repeat(maxLength - length)
       : asset.sizeLabel;
 
     console.log(`  ${sizeLabel}  ${chalk.dim(asset.folder + path.sep)}${chalk.cyan(asset.name)}`);

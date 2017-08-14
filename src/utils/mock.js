@@ -13,9 +13,9 @@ import proxy from 'express-http-proxy';
 import bodyParser from 'body-parser';
 import getPaths from './getPaths';
 import winPath from './noamalizePath';
+import { mockConfigFileName } from './fileNames';
 
 let error = null;
-const CONFIG_FILE = '.porsche.mock.js';
 const paths = getPaths(process.cwd());
 
 export function getConfig(filePath) {
@@ -84,7 +84,7 @@ function createProxy(method, path, target) {
 
 function innerApplyMock(devServer) {
   const app = devServer.app;
-  const { config, files } = getConfig(CONFIG_FILE);
+  const { config, files } = getConfig(mockConfigFileName);
 
   devServer.use(bodyParser.json({ limit: '5mb' }));
   devServer.use(bodyParser.urlencoded({
@@ -184,7 +184,7 @@ export function applyMock(devServer) {
     console.log();
     outputError();
 
-    const watcher = chokidar.watch(paths.resolveApp(CONFIG_FILE), {
+    const watcher = chokidar.watch(paths.resolveApp(mockConfigFileName), {
       ignored: /node_modules/,
       persistent: true,
     });
