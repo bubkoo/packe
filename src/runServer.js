@@ -59,7 +59,7 @@ function setupWatch(devServer) {
   });
 
   watcher.on('change', (path) => {
-    console.log(chalk.green(`File ${path.replace(paths.appDirectory, '.')} changed, try to restart server`));
+    console.log(chalk.green(`File ${path.replace(paths.appDirectory, '.')} changed, try to restart server.`));
     watcher.close();
     devServer.close();
     process.send('RESTART');

@@ -33,12 +33,12 @@ const argv = require('yargs')
   .option('output-path', {
     type: 'string',
     alias: 'o',
-    describe: 'Specify output path',
-    default: null,
+    describe: 'Specify the output path',
+    default: '',
   })
   .option('analyze', {
     type: 'boolean',
-    describe: 'Visualize and analyze your Webpack bundle.',
+    describe: 'Visualize and analyze the bundle',
     default: false,
   })
   .help('h')
