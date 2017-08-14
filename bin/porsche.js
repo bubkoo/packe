@@ -36,7 +36,7 @@ function printHelp() {
   console.log('Commands:');
   console.log('  server    Start local development and debugging');
   console.log('  build     Create an optimized production bundle');
-  console.log('  buildDll  Create a dll bundle for performance optimizating');
+  console.log('  buildDll  Create a dll bundle to improve performance');
   console.log('  test      Test your app');
   console.log();
 }
