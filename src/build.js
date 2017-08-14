@@ -1,19 +1,17 @@
 /* eslint-disable no-console */
 /* eslint-disable global-require */
 
-import path from 'path';
 import fs from 'fs-extra';
 import chalk from 'chalk';
-import filesize from 'filesize';
-import { sync as gzipSize } from 'gzip-size';
 import recursive from 'recursive-readdir';
-import stripAnsi from 'strip-ansi';
-import padRight from 'lodash.padright';
 import webpack from 'webpack';
-import readFile from './utils/readFile';
 import runArray from './utils/runArray';
 import getPaths from './utils/getPaths';
-import getConfig from './utils/getConfig';
+import printErrors from './utils/printErrors';
+import printFileSizes from './utils/printFileSizes';
+import loadRcConfig from './utils/loadRcConfig';
+import getOutputPath from './utils/getOutputPath';
+import getFileSizeMap from './utils/getFileSizeMap';
 import applyWebpackConfig from './utils/applyWebpackConfig';
 
 
@@ -51,75 +49,6 @@ let rcConfig;
 let outputPath;
 let finalConfig;
 
-function getOutputPath(config) {
-  if (Array.isArray(config)) {
-    return config[0].outputPath;
-  }
-  return config.outputPath;
-}
-
-// /User/dan/app/build/static/js/main.82be8.js => /static/js/main.js
-function removeFileNameHash(filename) {
-  const parts = filename.replace(appBuild, '').split('.');
-  return parts.splice(parts.length - 2, 1).join('.');
-}
-
-function printErrors(summary, errors) {
-  console.log(chalk.red(summary));
-  console.log();
-  errors.forEach((err) => {
-    console.log(err.message || err);
-    console.log();
-  });
-}
-
-// 1024, 2048 => "(+1 KB)"
-function getDifferenceLabel(currentSize, previousSize) {
-  const FIFTY_KILOBYTES = 1024 * 50;
-  const difference = currentSize - previousSize;
-  const fileSize = !Number.isNaN(difference) ? filesize(difference) : 0;
-  if (difference >= FIFTY_KILOBYTES) {
-    return chalk.red(`+${fileSize}`);
-  } else if (difference < FIFTY_KILOBYTES && difference > 0) {
-    return chalk.yellow(`+${fileSize}`);
-  } else if (difference < 0) {
-    return chalk.green(fileSize);
-  }
-  return '';
-}
-
-function printFileSizes(stats, previousSizeMap) {
-  const assets = stats.toJson().assets
-    .filter(asset => /\.(js|css)$/.test(asset.name))
-    .map((asset) => {
-      const content = readFile(`${appBuild}/${asset.name}`);
-      const size = gzipSize(content);
-      const previousSize = previousSizeMap[removeFileNameHash(asset.name)];
-      const difference = getDifferenceLabel(size, previousSize);
-      return {
-        size,
-        name: path.basename(asset.name),
-        folder: path.join(outputPath, path.dirname(asset.name)),
-        sizeLabel: filesize(size) + (difference ? ` (${difference})` : ''),
-      };
-    });
-
-  assets.sort((a, b) => b.size - a.size);
-
-  const maxLength = Math.max.apply(
-    null,
-    assets.map(a => stripAnsi(a.sizeLabel).length),
-  );
-
-  assets.forEach((asset) => {
-    const length = stripAnsi(asset.sizeLabel).length;
-    const sizeLabel = length < maxLength
-      ? padRight(asset.sizeLabel, maxLength - length, ' ')
-      : asset.sizeLabel;
-
-    console.log(`  ${sizeLabel}  ${chalk.dim(asset.folder + path.sep)}${chalk.cyan(asset.name)}`);
-  });
-}
 
 function doneHandler(previousSizeMap, options, resolve, err, stats) {
   if (err) {
@@ -148,7 +77,7 @@ function doneHandler(previousSizeMap, options, resolve, err, stats) {
 
     console.log('File sizes after gzip:');
     console.log();
-    printFileSizes(stats, previousSizeMap);
+    printFileSizes({ stats, previousSizeMap, appBuild, outputPath });
     console.log();
   }
 
@@ -176,45 +105,22 @@ function innerBuild(previousSizeMap, resolve, options) {
   }
 }
 
-export default function build() {
-  const paths = getPaths(argv.cwd);
+export default function build(options) {
+  const paths = getPaths(options.cwd);
 
-  try {
-    rcConfig = getConfig(paths, process.env.NODE_ENV);
-  } catch (e) {
-    console.log(chalk.red('Failed to parse config file.'));
-    console.log();
-    console.log(e.message);
-    process.exit(1);
-  }
-
-  outputPath = argv.outputPath || getOutputPath(rcConfig) || 'dist';
+  rcConfig = loadRcConfig(paths, process.env.NODE_ENV);
+  outputPath = options.outputPath || getOutputPath(rcConfig) || 'dist';
   appBuild = paths.resolveApp(outputPath);
-
   finalConfig = runArray(rcConfig, config => applyWebpackConfig(
-    require('./preset/webpack.config.prod')(config, paths, appBuild, argv),
+    require('./preset/webpack.config.prod')(config, paths, appBuild, options),
     process.env.NODE_ENV,
   ));
 
   return new Promise((resolve) => {
-    // First, read the current file sizes in build directory.
-    // This lets us display how much they changed later.
-    recursive(appBuild, (err, fileNames) => {
-      const previousSizeMap = (fileNames || [])
-        .filter(fileName => /\.(js|css)$/.test(fileName))
-        .reduce((memo, fileName) => {
-          const contents = fs.readFileSync(fileName);
-          const key = removeFileNameHash(fileName);
-          memo[key] = gzipSize(contents);
-          return memo;
-        }, {});
-
-      // Remove all content but keep the directory so that
-      // if you're in it, you don't end up in Trash
+    recursive(appBuild, (err, filePaths) => {
+      const previousSizeMap = getFileSizeMap(filePaths);
       fs.emptyDirSync(appBuild);
-
-      // Start the webpack build
-      innerBuild(previousSizeMap, resolve, argv);
+      innerBuild(previousSizeMap, resolve, options);
     });
   });
 }
