@@ -50,7 +50,7 @@ export function getBabelOptions(config) {
 export function getResolve(config, paths) {
   return {
     resolve: {
-      modulesDirectories: [
+      modules: [
         paths.ownNodeModules,
         paths.appNodeModules,
       ],
@@ -61,7 +61,7 @@ export function getResolve(config, paths) {
       ],
     },
     resolveLoader: {
-      modulesDirectories: [
+      modules: [
         paths.ownNodeModules,
         paths.appNodeModules,
       ],
