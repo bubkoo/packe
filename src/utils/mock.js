@@ -18,8 +18,8 @@ import getRelativePath from './getRelativePath';
 import { mockConfigFileName } from './fileNames';
 
 
-let error = null;
 const paths = getPaths(process.cwd());
+let error = null;
 
 function getConfig(filePath) {
   const fullPath = paths.resolveApp(filePath);
