@@ -14,7 +14,7 @@
 $ npm install porsche -g
 ```
 
-Or you can install it as local devDependency:
+Or you can install it as local devDependency.
 
 ```
 $ npm install porsche --save-dev
