@@ -15,4 +15,3 @@ if (!process.send) {
 } else {
   require('./runServer'); // eslint-disable-line
 }
-

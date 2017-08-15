@@ -192,8 +192,8 @@ function init() {
     process.exit(1);
   }
 
-  finalConfig = runArray(rcConfig, c => applyWebpackConfig(
-    require('./preset/webpack.config.dev')(c, cwd),
+  finalConfig = runArray(rcConfig, config => applyWebpackConfig(
+    require('./preset/webpack.config.dev')(config, paths),
     process.env.NODE_ENV,
   ));
 
