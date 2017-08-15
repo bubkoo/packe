@@ -1,16 +1,18 @@
-import webpack from 'webpack';
 import { join } from 'path';
-import pullAll from 'lodash.pullall';
+import webpack from 'webpack';
 import uniq from 'lodash.uniq';
+import pullAll from 'lodash.pullall';
+import isPlainObject from 'is-plain-object';
 import { baseName } from '../utils/fileNames';
+
 
 export default function (rcConfig, paths) {
   const pkg = require(join(paths.appDirectory, 'package.json')); // eslint-disable-line
-  const appBuild = paths.dllNodeModule;
-  const { include, exclude } = rcConfig.dllPlugin || {};
+  const { dllPlugin } = rcConfig;
+  const { include, exclude } = isPlainObject(dllPlugin) ? dllPlugin : {};
   const dependencyNames = Object.keys(pkg.dependencies);
-  // distinct includes
   const includeDependencies = uniq(dependencyNames.concat(include || []));
+  const appBuild = paths.dllNodeModule;
 
   return {
     entry: {
@@ -23,7 +25,7 @@ export default function (rcConfig, paths) {
     },
     plugins: [
       new webpack.DllPlugin({
-        path: join(appBuild, '[name].json'),
+        path: join(appBuild, '[name].manifest.json'),
         name: '[name]',
         context: paths.appSrc,
       }),

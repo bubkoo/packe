@@ -5,7 +5,6 @@ import isPlainObject from 'is-plain-object';
 
 const DEFAULT_ENTRY = './src/index.js';
 
-
 function getEntry(name, path, isBuild) {
   const key = name || basename(path, extname(path));
   const value = isBuild

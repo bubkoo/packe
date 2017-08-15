@@ -4,9 +4,10 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import WatchMissingNodeModulesPlugin from 'react-dev-utils/WatchMissingNodeModulesPlugin';
 import SystemBellWebpackPlugin from 'system-bell-webpack-plugin';
-import getEntry from '../utils/getEntry';
-import getTheme from '../utils/getTheme';
-import getCSSLoaders from '../utils/getCSSLoaders';
+import { dllBundleFileName } from '../utils/fileNames';
+import getEntry from './getEntry';
+import getTheme from './getTheme';
+import getCSSLoaders from './getCSSLoaders';
 import {
   node,
   getBabelOptions,
@@ -20,7 +21,6 @@ import {
   getCommonPlugins,
   addExtraBabelIncludes,
 } from './common';
-import { dllConfigFileName } from '../utils/fileNames';
 
 export default function (config, paths) {
   const publicPath = '/';
@@ -53,8 +53,8 @@ export default function (config, paths) {
     }),
     new CopyWebpackPlugin([
       {
-        from: join(paths.dllNodeModule, dllConfigFileName),
-        to: join(paths.appBuild, dllConfigFileName),
+        from: join(paths.dllNodeModule, dllBundleFileName),
+        to: join(paths.appBuild, dllBundleFileName),
       },
     ]),
   ] : [];

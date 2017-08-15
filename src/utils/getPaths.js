@@ -1,5 +1,6 @@
-const { resolve } = require('path');
-const { realpathSync } = require('fs');
+import { resolve, join } from 'path';
+import { realpathSync } from 'fs';
+import { dllModulePath, dllManifestFileName } from './fileNames';
 
 function resolveOwn(relativePath) {
   return resolve(__dirname, relativePath);
@@ -13,6 +14,10 @@ export default function getPaths(cwd) {
   }
 
   return {
+    cwd,
+    resolveApp,
+    appDirectory,
+
     appSrc: resolveApp('src'),
     appBuild: resolveApp('dist'),
     appPublic: resolveApp('public'),
@@ -20,10 +25,7 @@ export default function getPaths(cwd) {
     appPackageJson: resolveApp('package.json'),
     appNodeModules: resolveApp('node_modules'),
     ownNodeModules: resolveOwn('../../node_modules'),
-    dllNodeModule: resolveApp('node_modules/porsche-dlls'),
-    dllManifest: resolveApp('node_modules/porsche-dlls/porsche.json'),
-    cwd,
-    resolveApp,
-    appDirectory,
+    dllNodeModule: resolveApp(dllModulePath),
+    dllManifest: resolveApp(join(dllModulePath, dllManifestFileName)),
   };
 }

@@ -21,8 +21,10 @@ const argv = require('yargs')
   .help('h')
   .argv;
 
+
 let rcConfig;
 let appBuild;
+let outputPath;
 let finalConfig;
 
 
@@ -40,11 +42,7 @@ function doneHandler(previousSizeMap, options, resolve, err, stats) {
   console.log(chalk.green(`Compiled successfully in ${(stats.toJson().time / 1000).toFixed(1)}s.`));
   console.log();
 
-  console.log('File sizes after gzip:');
-  console.log();
-  printFileSizes(stats, previousSizeMap);
-  console.log();
-
+  printFileSizes({ stats, previousSizeMap, appBuild, outputPath });
   resolve();
 }
 
@@ -61,11 +59,15 @@ export default function build(options) {
   rcConfig = loadRcConfig(paths, process.env.NODE_ENV);
 
   if (!rcConfig.dllPlugin) {
-    console.log(chalk.red('`dllPlugin` donot specified in config file.'));
+    console.log(chalk.red('`dllPlugin` should be specified in the config file.'));
     process.exit(1);
   }
 
   appBuild = paths.dllNodeModule;
+  outputPath = appBuild.replace(paths.cwd, '').substr(1);
+
+  console.log(outputPath);
+
   finalConfig = applyWebpackConfig(
     require('./preset/webpack.config.dll')(rcConfig, paths, options),
     process.env.NODE_ENV,

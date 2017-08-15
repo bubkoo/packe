@@ -5,7 +5,6 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import noamalizePath from '../utils/noamalizePath';
-import normalizeDefine from './normalizeDefine';
 
 
 export const node = {
@@ -28,6 +27,7 @@ export const spriteSvgLoader = {
 };
 
 export const defaultDevtool = '#cheap-module-eval-source-map';
+
 
 export function getBabelOptions(config) {
   return {
@@ -270,6 +270,13 @@ export function getCSSRules(env, { config, paths, cssLoaders, theme }) {
   }
 
   return rules;
+}
+
+export function normalizeDefine(define) {
+  return Object.keys(define).reduce((memo, key) => {
+    memo[key] = JSON.stringify(define[key]);
+    return memo;
+  }, {});
 }
 
 export function getCommonPlugins({ config, paths, appBuild, NODE_ENV }) {

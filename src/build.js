@@ -69,17 +69,9 @@ function doneHandler(previousSizeMap, options, resolve, err, stats) {
     }
   });
 
-  if (stats.stats) {
-    console.log(chalk.green('Compiled successfully.'));
-  } else {
-    console.log(chalk.green(`Compiled successfully in ${(stats.toJson().time / 1000).toFixed(1)}s.`));
-    console.log();
-
-    console.log('File sizes after gzip:');
-    console.log();
-    printFileSizes({ stats, previousSizeMap, appBuild, outputPath });
-    console.log();
-  }
+  console.log(chalk.green(`Compiled successfully in ${(stats.toJson().time / 1000).toFixed(1)}s.`));
+  console.log();
+  printFileSizes({ stats, previousSizeMap, appBuild, outputPath });
 
   if (options.analyze) {
     console.log(`Analyze result is generated at ${chalk.cyan('dist/stats.html')}.`);
@@ -109,7 +101,7 @@ export default function build(options) {
   const paths = getPaths(options.cwd);
 
   rcConfig = loadRcConfig(paths, process.env.NODE_ENV);
-  outputPath = options.outputPath || getOutputPath(rcConfig) || 'dist';
+  outputPath = getOutputPath(options, rcConfig);
   appBuild = paths.resolveApp(outputPath);
   finalConfig = runArray(rcConfig, config => applyWebpackConfig(
     require('./preset/webpack.config.prod')(config, paths, appBuild, options),

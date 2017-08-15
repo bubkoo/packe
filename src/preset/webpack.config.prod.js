@@ -1,15 +1,14 @@
 import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import Visualizer from 'webpack-visualizer-plugin';
-import getEntry from '../utils/getEntry';
-import getTheme from '../utils/getTheme';
-import getCSSLoaders from '../utils/getCSSLoaders';
+import getEntry from './getEntry';
+import getTheme from './getTheme';
+import getCSSLoaders from './getCSSLoaders';
 import {
   node,
   defaultDevtool,
   baseSvgLoader,
   spriteSvgLoader,
-
   getBabelOptions,
   getResolve,
   getFirstRules,

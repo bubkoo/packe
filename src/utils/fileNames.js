@@ -1,5 +1,9 @@
 export const baseName = 'porsche';
-export const dllConfigFileName = `${baseName}.dll.js`;
+
+export const dllModulePath = `node_modules/${baseName}-dll`;
+export const dllBundleFileName = `${baseName}.dll.js`;
+export const dllManifestFileName = `${baseName}.manifest.json`;
+
 export const mockConfigFileName = `.${baseName}.mode.js`;
 
 export const rcConfigFileName = `.${baseName}rc`;

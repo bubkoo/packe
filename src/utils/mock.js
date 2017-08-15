@@ -12,7 +12,7 @@ import chokidar from 'chokidar';
 import proxy from 'express-http-proxy';
 import bodyParser from 'body-parser';
 import getPaths from './getPaths';
-import winPath from './noamalizePath';
+import noamalizePath from './noamalizePath';
 import { mockConfigFileName } from './fileNames';
 
 let error = null;
@@ -77,7 +77,7 @@ function createProxy(method, path, target) {
       if (matches.length > 1) {
         matchPath = matches[1];
       }
-      return join(winPath(url.parse(target).path), matchPath);
+      return join(noamalizePath(url.parse(target).path), matchPath);
     },
   });
 }

@@ -25,6 +25,9 @@ function getDifferenceLabel(currentSize, previousSize) {
 }
 
 export default function printFileSizes({ stats, previousSizeMap, appBuild, outputPath }) {
+  console.log('File sizes after gzip:');
+  console.log();
+
   const assets = stats.toJson().assets
     .filter(asset => /\.(js|css)$/.test(asset.name))
     .map((asset) => {
@@ -54,6 +57,8 @@ export default function printFileSizes({ stats, previousSizeMap, appBuild, outpu
       ? asset.sizeLabel + ' '.repeat(maxLength - length)
       : asset.sizeLabel;
 
-    console.log(`  ${sizeLabel}  ${chalk.dim(asset.folder + path.sep)}${chalk.cyan(asset.name)}`);
+    console.log(`  ${sizeLabel}  ${chalk.dim(`./${asset.folder}${path.sep}`)}${chalk.cyan(asset.name)}`);
   });
+
+  console.log();
 }
