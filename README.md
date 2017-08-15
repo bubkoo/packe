@@ -5,6 +5,7 @@
 [![MIT License](https://img.shields.io/badge/license-MIT_License-green.svg?style=flat-square)](https://github.com/bubkoo/porsche/blob/master/LICENSE)
 
 [![NPM Version](https://img.shields.io/npm/v/porsche.svg?style=flat-square)](https://www.npmjs.com/package/porsche)
+[![Dependencies](https://david-dm.org/bubkoo/porsche/status.svg)](https://david-dm.org/bubkoo/porsche)
 [![Package Quality](http://npm.packagequality.com/shield/porsche.svg)](http://packagequality.com/#?package=porsche)
 
 ## Install
