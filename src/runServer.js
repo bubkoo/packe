@@ -49,7 +49,7 @@ function setupWatch(devServer) {
     paths.resolveApp(fileNames.jsConfigFileName),
     paths.resolveApp(fileNames.ymlConfigFileName),
     paths.resolveApp(fileNames.yamlConfigFileName),
-    paths.resolveApp('webpack.config.js'),
+    paths.resolveApp(fileNames.webpackConfigFileName),
   ];
 
   if (typeof rcConfig.theme === 'string') {

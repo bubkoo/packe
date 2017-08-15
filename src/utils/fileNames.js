@@ -5,6 +5,7 @@ export const dllBundleFileName = `${baseName}.dll.js`;
 export const dllManifestFileName = `${baseName}.manifest.json`;
 
 export const mockConfigFileName = `.${baseName}.mode.js`;
+export const webpackConfigFileName = 'webpack.config.js';
 
 export const rcConfigFileName = `.${baseName}rc`;
 export const jsConfigFileName = `${rcConfigFileName}.js`;
