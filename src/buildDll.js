@@ -7,10 +7,11 @@ import rimraf from 'rimraf';
 import recursive from 'recursive-readdir';
 import webpack from 'webpack';
 import getPaths from './utils/getPaths';
-import loadRcConfig from './utils/loadRcConfig';
 import printErrors from './utils/printErrors';
+import safeGetConfig from './utils/safeGetConfig';
 import printFileSizes from './utils/printFileSizes';
 import getFileSizeMap from './utils/getFileSizeMap';
+import getRelativePath from './utils/getRelativePath';
 import applyWebpackConfig from './utils/applyWebpackConfig';
 
 
@@ -56,7 +57,7 @@ function innerBuild(previousSizeMap, resolve, options) {
 
 export default function build(options) {
   const paths = getPaths(options.cwd);
-  rcConfig = loadRcConfig(paths, process.env.NODE_ENV);
+  rcConfig = safeGetConfig(paths, process.env.NODE_ENV);
 
   if (!rcConfig.dllPlugin) {
     console.log(chalk.red('`dllPlugin` should be specified in the config file.'));
@@ -64,9 +65,7 @@ export default function build(options) {
   }
 
   appBuild = paths.dllNodeModule;
-  outputPath = appBuild.replace(paths.cwd, '').substr(1);
-
-  console.log(outputPath);
+  outputPath = getRelativePath(appBuild, paths.appDirectory);
 
   finalConfig = applyWebpackConfig(
     require('./preset/webpack.config.dll')(rcConfig, paths, options),

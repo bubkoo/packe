@@ -9,8 +9,7 @@ import isPlainObject from 'is-plain-object';
 import readFile from './readFile';
 import * as fileNames from './fileNames';
 import applyNpmVariables from './applyNpmVariables';
-
-require('./registerBabel');
+import './registerBabel';
 
 
 function mergeEnv(target, source) {

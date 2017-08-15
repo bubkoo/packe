@@ -8,10 +8,10 @@ import webpack from 'webpack';
 import runArray from './utils/runArray';
 import getPaths from './utils/getPaths';
 import printErrors from './utils/printErrors';
-import printFileSizes from './utils/printFileSizes';
-import loadRcConfig from './utils/loadRcConfig';
+import safeGetConfig from './utils/safeGetConfig';
 import getOutputPath from './utils/getOutputPath';
 import getFileSizeMap from './utils/getFileSizeMap';
+import printFileSizes from './utils/printFileSizes';
 import applyWebpackConfig from './utils/applyWebpackConfig';
 
 
@@ -100,7 +100,7 @@ function innerBuild(previousSizeMap, resolve, options) {
 export default function build(options) {
   const paths = getPaths(options.cwd);
 
-  rcConfig = loadRcConfig(paths, process.env.NODE_ENV);
+  rcConfig = safeGetConfig(paths, process.env.NODE_ENV);
   outputPath = getOutputPath(options, rcConfig);
   appBuild = paths.resolveApp(outputPath);
   finalConfig = runArray(rcConfig, config => applyWebpackConfig(

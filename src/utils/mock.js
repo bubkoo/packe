@@ -13,12 +13,15 @@ import proxy from 'express-http-proxy';
 import bodyParser from 'body-parser';
 import getPaths from './getPaths';
 import noamalizePath from './noamalizePath';
+import printFileChange from './printFileChange';
+import getRelativePath from './getRelativePath';
 import { mockConfigFileName } from './fileNames';
+
 
 let error = null;
 const paths = getPaths(process.cwd());
 
-export function getConfig(filePath) {
+function getConfig(filePath) {
   const fullPath = paths.resolveApp(filePath);
   if (fs.existsSync(fullPath)) {
     const files = [];
@@ -57,10 +60,10 @@ function parseKey(key) {
 
 function createMockHandler(method, path, value) {
   return function mockHandler(...args) {
-    const res = args[1];
     if (typeof value === 'function') {
       value(...args);
     } else {
+      const res = args[1];
       res.json(value);
     }
   };
@@ -87,10 +90,7 @@ function innerApplyMock(devServer) {
   const { config, files } = getConfig(mockConfigFileName);
 
   devServer.use(bodyParser.json({ limit: '5mb' }));
-  devServer.use(bodyParser.urlencoded({
-    extended: true,
-    limit: '5mb',
-  }));
+  devServer.use(bodyParser.urlencoded({ extended: true, limit: '5mb' }));
 
   Object.keys(config).forEach((key) => {
     const value = config[key];
@@ -108,27 +108,22 @@ function innerApplyMock(devServer) {
         ? new RegExp(`^${path}$`)
         : path;
 
-      app.use(
-        route,
-        createProxy(method, path, value),
-      );
+      app.use(route, createProxy(method, path, value));
     } else {
-      app[method](
-        path,
-        createMockHandler(method, path, value),
-      );
+      app[method](path, createMockHandler(method, path, value));
     }
   });
 
   // 调整 stack，把 historyApiFallback 放到最后
-  let lastIndex = null;
+  let lastIndex = -1;
   app._router.stack.forEach((item, index) => {
     if (item.name === 'webpackDevMiddleware') {
       lastIndex = index;
     }
   });
+
   const mockAPILength = app._router.stack.length - 1 - lastIndex;
-  if (lastIndex && lastIndex > 0) {
+  if (lastIndex > 0) {
     const newStack = app._router.stack;
     newStack.push(newStack[lastIndex - 1]);
     newStack.push(newStack[lastIndex]);
@@ -141,8 +136,8 @@ function innerApplyMock(devServer) {
     persistent: true,
   });
 
-  watcher.on('change', (path) => {
-    console.log(chalk.green('CHANGED '), path.replace(paths.appDirectory, '.'));
+  watcher.on('change', (filePath) => {
+    printFileChange(getRelativePath(filePath, paths.appDirectory));
     watcher.close();
     // 删除旧的 mock api
     app._router.stack.splice(lastIndex - 1, mockAPILength);
@@ -151,12 +146,11 @@ function innerApplyMock(devServer) {
   });
 }
 
-
 export function outputError() {
   if (!error) return;
 
   const filePath = error.message.split(': ')[0];
-  const relativeFilePath = filePath.replace(paths.appDirectory, '.');
+  const relativeFilePath = getRelativePath(filePath, paths.appDirectory);
   const errors = error.stack.split('\n')
     .filter(line => line.trim().indexOf('at ') !== 0)
     .map(line => line.replace(`${filePath}: `, ''));
@@ -165,7 +159,7 @@ export function outputError() {
 
   console.log(chalk.red('Failed to parse mock config.'));
   console.log();
-  console.log(`Error in ${relativeFilePath}`);
+  console.log(`Error in ${chalk.cyan(relativeFilePath)}`);
   console.log(errors.join('\n'));
   console.log();
 }
@@ -189,8 +183,8 @@ export function applyMock(devServer) {
       persistent: true,
     });
 
-    watcher.on('change', (path) => {
-      console.log(chalk.green('CHANGED '), path.replace(paths.appDirectory, '.'));
+    watcher.on('change', (filePath) => {
+      printFileChange(getRelativePath(filePath, paths.appDirectory));
       watcher.close();
       applyMock(devServer);
     });

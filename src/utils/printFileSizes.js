@@ -57,7 +57,7 @@ export default function printFileSizes({ stats, previousSizeMap, appBuild, outpu
       ? asset.sizeLabel + ' '.repeat(maxLength - length)
       : asset.sizeLabel;
 
-    console.log(`  ${sizeLabel}  ${chalk.dim(`./${asset.folder}${path.sep}`)}${chalk.cyan(asset.name)}`);
+    console.log(`  ${sizeLabel}  ${chalk.dim(`${asset.folder}${path.sep}`)}${chalk.cyan(asset.name)}`);
   });
 
   console.log();

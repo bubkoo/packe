@@ -3,7 +3,7 @@
 import chalk from 'chalk';
 import getConfig from '../utils/getConfig';
 
-export default function loadRcConfig(paths, env) {
+export default function safeGetConfig(paths, env) {
   try {
     return getConfig(paths, env);
   } catch (e) {

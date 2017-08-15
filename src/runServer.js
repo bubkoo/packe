@@ -13,25 +13,28 @@ import WebpackDevServer from 'webpack-dev-server';
 import historyApiFallback from 'connect-history-api-fallback';
 import getPaths from './utils/getPaths';
 import runArray from './utils/runArray';
+import * as fileNames from './utils/fileNames';
 import printErrors from './utils/printErrors';
 import clearConsole from './utils/clearConsole';
-import applyWebpackConfig from './utils/applyWebpackConfig';
-import { applyMock, outputError as outputMockError } from './utils/mock';
-import loadRcConfig from './utils/loadRcConfig';
+import safeGetConfig from './utils/safeGetConfig';
 import getPublicPath from './utils/getPublicPath';
+import getRelativePath from './utils/getRelativePath';
+import printFileChange from './utils/printFileChange';
+import applyWebpackConfig from './utils/applyWebpackConfig';
+import { applyMock, outputError as printMockError } from './utils/mock';
 
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
-const host = process.env.HOST || '0.0.0.0';
+const host = process.env.HOST || '127.0.0.1';
 const DEFAULT_PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 8000;
 const isInteractive = process.stdout.isTTY;
 const cwd = process.cwd();
 const paths = getPaths(cwd);
 
 
-require('yargs') // eslint-disable-line
+const argv = require('yargs') // eslint-disable-line
   .usage('Usage: porsche server [options]')
   .help('h')
   .argv;
@@ -42,10 +45,10 @@ let finalConfig;
 
 function setupWatch(devServer) {
   const files = [
-    paths.resolveApp('.porshcerc'),
-    paths.resolveApp('.porshcerc.js'),
-    paths.resolveApp('.porshcerc.yml'),
-    paths.resolveApp('.porshcerc.yaml'),
+    paths.resolveApp(fileNames.rcConfigFileName),
+    paths.resolveApp(fileNames.jsConfigFileName),
+    paths.resolveApp(fileNames.ymlConfigFileName),
+    paths.resolveApp(fileNames.yamlConfigFileName),
     paths.resolveApp('webpack.config.js'),
   ];
 
@@ -59,10 +62,12 @@ function setupWatch(devServer) {
   });
 
   watcher.on('change', (path) => {
-    console.log(chalk.green(`File ${path.replace(paths.appDirectory, '.')} changed, try to restart server.`));
     watcher.close();
     devServer.close();
-    process.send('RESTART');
+    process.send({
+      type: 'RESTART',
+      changedFile: getRelativePath(path, paths.appDirectory),
+    });
   });
 }
 
@@ -85,10 +90,23 @@ function setupCompiler(port) {
     console.log(e);
   }
 
-  compiler.plugin('invalid', () => {
+  let changedFile;
+  let changedTime;
+
+  function printChange() {
+    printFileChange(changedFile, changedTime);
+  }
+
+  // after invalidating a watch compile
+  compiler.plugin('invalid', (filePath, changeTime) => {
     if (isInteractive) {
       clearConsole();
     }
+
+    changedFile = getRelativePath(filePath, paths.appDirectory);
+    changedTime = changeTime;
+
+    printChange();
     console.log('Compiling...');
   });
 
@@ -104,11 +122,8 @@ function setupCompiler(port) {
     const showInstructions = succeed && (isInteractive || isFirstCompile);
 
     if (succeed) {
-      if (stats.stats) {
-        console.log(chalk.green('Compiled successfully'));
-      } else {
-        console.log(chalk.green(`Compiled successfully in ${(json.time / 1000).toFixed(1)}s!`));
-      }
+      printChange();
+      console.log(chalk.green(`Compiled successfully in ${(json.time / 1000).toFixed(1)}s!`));
     }
 
     if (showInstructions) {
@@ -128,7 +143,7 @@ function setupCompiler(port) {
       printErrors('Failed to compile.', messages.errors);
     } else if (messages.warnings.length) {
       printErrors('Compiled with warnings.', messages.warnings);
-      // Show some ESLint tricks.
+
       console.log('You may use special comments to disable some warnings.');
       console.log(`Use ${chalk.yellow('// eslint-disable-next-line')} to ignore the next line.`);
       console.log(`Use ${chalk.yellow('/* eslint-disable */')} to ignore all warnings in a file.`);
@@ -136,7 +151,7 @@ function setupCompiler(port) {
     }
 
     if (isInteractive) {
-      outputMockError();
+      printMockError();
     }
   });
 }
@@ -167,15 +182,22 @@ function runDevServer(port) {
       process.exit(1);
     }
 
-    process.send('READY');
+    process.send({ type: 'READY' });
 
     if (isInteractive) {
       clearConsole();
     }
-    console.log(chalk.cyan('Starting the development server...'));
+
+    if (argv.restarting && argv.changedFile) {
+      console.log(chalk.green(`File "${argv.changedFile}" changed.`));
+      console.log(chalk.cyan('Restarting the development server...'));
+    } else {
+      console.log(chalk.cyan('Starting the development server...'));
+    }
     console.log();
+
     if (isInteractive) {
-      outputMockError();
+      printMockError();
     }
 
     openBrowser(`${protocol}://${host}:${port}/`);
@@ -185,10 +207,10 @@ function runDevServer(port) {
 }
 
 function init() {
-  rcConfig = loadRcConfig(paths, process.env.NODE_ENV);
+  rcConfig = safeGetConfig(paths, process.env.NODE_ENV);
 
   if (rcConfig.dllPlugin && !fs.existsSync(paths.dllManifest)) {
-    console.log(chalk.red('Failed to start the server, since you have enabled dllPlugin, you should run `porsche buildDll` before `porsche server`.'));
+    console.log(chalk.red('Failed to start the server, since you have enabled dllPlugin, \nyou should run `porsche buildDll` before `porsche server`.'));
     process.exit(1);
   }
 

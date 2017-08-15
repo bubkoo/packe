@@ -1,9 +1,9 @@
 import { join } from 'path';
 import webpack from 'webpack';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import SystemBellWebpackPlugin from 'system-bell-webpack-plugin';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import WatchMissingNodeModulesPlugin from 'react-dev-utils/WatchMissingNodeModulesPlugin';
-import SystemBellWebpackPlugin from 'system-bell-webpack-plugin';
 import { dllBundleFileName } from '../utils/fileNames';
 import getEntry from './getEntry';
 import getTheme from './getTheme';

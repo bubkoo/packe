@@ -87,6 +87,7 @@
     "lodash.get": "^4.4.2",
     "lodash.pullall": "^4.2.0",
     "lodash.uniq": "^4.5.0",
+    "moment": "^2.18.1",
     "parse-json-pretty": "^0.1.0",
     "postcss": "^6.0.9",
     "postcss-loader": "^2.0.6",
