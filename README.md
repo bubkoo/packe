@@ -1,4 +1,4 @@
-> Comply and debug tool for react apps.
+> Build and dev-debug tool for react apps.
 
 ![porsche.svg](https://cdn.rawgit.com/bubkoo/porsche/master/porsche.svg)
 

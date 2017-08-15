@@ -1,7 +1,7 @@
 {
   "name": "porsche",
   "version": "0.0.2",
-  "description": "",
+  "description": "Build and dev-debug tool for react apps",
   "bin": {
     "porsche": "./bin/porsche.js"
   },
