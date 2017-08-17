@@ -121,8 +121,8 @@ function setupCompiler(port) {
     const succeed = !messages.errors.length && !messages.warnings.length;
     const showInstructions = succeed && (isInteractive || isFirstCompile);
 
+    printChange();
     if (succeed) {
-      printChange();
       console.log(chalk.green(`Compiled successfully in ${(json.time / 1000).toFixed(1)}s!`));
     }
 
@@ -143,11 +143,6 @@ function setupCompiler(port) {
       printErrors('Failed to compile.', messages.errors);
     } else if (messages.warnings.length) {
       printErrors('Compiled with warnings.', messages.warnings);
-
-      console.log('You may use special comments to disable some warnings.');
-      console.log(`Use ${chalk.yellow('// eslint-disable-next-line')} to ignore the next line.`);
-      console.log(`Use ${chalk.yellow('/* eslint-disable */')} to ignore all warnings in a file.`);
-      console.log();
     }
 
     if (isInteractive) {
