@@ -79,7 +79,7 @@ export function getFirstRules({ paths, babelOptions }) {
         /\.svg$/,
         /\.tsx?$/,
       ],
-      loader: 'url',
+      loader: 'url-loader',
       options: {
         limit: 10000,
         name: 'static/[name].[hash:8].[ext]',
@@ -110,7 +110,7 @@ export function getLastRules({ paths, babelOptions }) {
           options: babelOptions,
         },
         {
-          loader: 'awesome-typescript',
+          loader: 'awesome-typescript-loader',
           options: { transpileOnly: true },
         },
       ],
@@ -221,7 +221,7 @@ export function getCSSRules(env, { config, paths, cssLoaders, theme }) {
           'style-loader',
           ...cssLoaders.own,
           {
-            loader: 'sass',
+            loader: 'sass-loader',
             options: sassOptions,
           },
         ],
@@ -233,7 +233,7 @@ export function getCSSRules(env, { config, paths, cssLoaders, theme }) {
           'style-loader',
           ...cssLoaders.nodeModules,
           {
-            loader: 'sass',
+            loader: 'sass-loader',
             options: sassOptions,
           },
         ],
@@ -251,7 +251,7 @@ export function getCSSRules(env, { config, paths, cssLoaders, theme }) {
             'style-loader',
             ...cssLoaders.noCSSModules,
             {
-              loader: 'sass',
+              loader: 'sass-loader',
               options: sassOptions,
             },
           ],
