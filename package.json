@@ -1,6 +1,6 @@
 {
   "name": "porsche",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Build and dev-debug tool for react apps",
   "bin": {
     "porsche": "./bin/porsche.js"
@@ -115,6 +115,7 @@
     "debug": "cross-env NODE_ENV=test mocha --require babel-register --no-timeouts test/**/*-test.js",
     "report": "nyc report --reporter=html",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "precommit": "npm run lint"
+    "precommit": "npm run lint",
+    "prepublish": "npm run build"
   }
 }
