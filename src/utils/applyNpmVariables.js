@@ -16,7 +16,7 @@ function getPath(str) {
 
 export default function applyNpmVariables(obj, pkg) {
   if (typeof obj === 'string') {
-    return obj.replace(/\$\{(.*)\}/g, (raw, mark) => {
+    return obj.replace(/\$\{([^{}]*)\}/g, (raw, mark) => {
       const path = getPath(mark);
       return path ? getIn(pkg, path, raw) : raw;
     });
