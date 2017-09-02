@@ -1,4 +1,4 @@
-> Build and dev-debug tool for react apps.
+> Build and dev-debug tool for react apps. (fork from [roadhog](https://github.com/sorrycc/roadhog))
 
 ![porsche.svg](https://cdn.rawgit.com/bubkoo/porsche/master/porsche.svg)
 
@@ -19,9 +19,6 @@ Or you can install it as local devDependency.
 ```
 $ npm install porsche --save-dev
 ```
-
-## Usage
-
 
 ## Contributing
 
