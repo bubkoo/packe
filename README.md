@@ -8,6 +8,11 @@
 [![Dependencies](https://david-dm.org/bubkoo/porsche/status.svg)](https://david-dm.org/bubkoo/porsche)
 [![Package Quality](http://npm.packagequality.com/shield/porsche.svg)](http://packagequality.com/#?package=porsche)
 
+## Feature
+
+- Support `*.js` entry file
+
+
 ## Install
 
 ```
