@@ -262,9 +262,16 @@ export function getCSSRules(env, { config, paths, cssLoaders, theme }) {
 
   if (env === 'production') {
     rules.forEach((rule) => {
+      const use = rule.use.slice(1).map(item => ({
+        ...item,
+        options: {
+          ...item.options,
+          minimize: true,
+        },
+      }));
       rule.use = ExtractTextPlugin.extract({
         fallback: 'style-loader',
-        use: rule.use.slice(1),
+        use,
       });
     });
   }
