@@ -5,6 +5,6 @@ import moment from 'moment';
 
 export default function printFileChange(fileName, time = Date.now()) {
   if (fileName) {
-    console.log(`${chalk.dim(moment(time).format('YYYY-MM-DD HH:mm:ss'))} ${chalk.dim('File')} ${chalk.cyan(`"${fileName}"`)} ${chalk.dim('changed.')}`);
+    console.log(`${chalk.dim(moment(time).format('YYYY-MM-DD HH:mm:ss'))} ${chalk.dim('File')} ${chalk.cyan(`"${fileName}"`)} ${chalk.dim('updated.')}`);
   }
 }
