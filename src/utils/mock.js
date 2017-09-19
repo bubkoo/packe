@@ -74,7 +74,7 @@ function createProxy(method, path, target) {
     filter(req) {
       return method ? req.method.toLowerCase() === method.toLowerCase() : true;
     },
-    forwardPath(req) {
+    proxyReqPathResolver(req) {
       let matchPath = req.originalUrl;
       const matches = matchPath.match(path);
       if (matches.length > 1) {
