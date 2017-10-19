@@ -72,14 +72,7 @@ function setupWatch(devServer) {
 }
 
 function addMiddleware(devServer) {
-  const proxy = require(paths.appPackageJson).proxy;
-  devServer.use(historyApiFallback({
-    disableDotRule: true,
-    htmlAcceptHeaders: proxy ?
-      ['text/html'] :
-      ['text/html', '*/*'],
-  }));
-  // TODO: proxy index.html, ...
+  devServer.use(historyApiFallback());
   devServer.use(devServer.middleware);
 }
 
