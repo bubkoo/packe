@@ -18,7 +18,7 @@ if (process.env.NODE_ENV !== 'test') {
   require('babel-register')({ // eslint-disable-line
     only: new RegExp(`(${files.join('|')})`),
     presets: [
-      require.resolve('babel-preset-es2015'),
+      require.resolve('babel-preset-env'),
       require.resolve('babel-preset-react'),
       require.resolve('babel-preset-stage-0'),
     ],
