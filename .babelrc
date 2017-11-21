@@ -1,6 +1,12 @@
 {
   "presets": [
-    "es2015",
+    [
+      "env",
+      {
+        "loose": true,
+        "useBuiltIns": true
+      }
+    ],
     "stage-0"
   ],
   "plugins": [
