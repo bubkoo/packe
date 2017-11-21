@@ -67,9 +67,9 @@ export default function (config, paths) {
     devtool,
     module: {
       rules: [
-        ...getFirstRules({ paths, babelOptions }),
+        ...getFirstRules({ config, paths, babelOptions }),
         ...getCSSRules('development', { config, paths, cssLoaders, theme }),
-        ...getLastRules({ paths, babelOptions }),
+        ...getLastRules({ config, paths, babelOptions }),
       ],
     },
     plugins: [

@@ -98,7 +98,7 @@ export function getFirstRules({ paths, babelOptions }) {
   ];
 }
 
-export function getLastRules({ paths, babelOptions }) {
+export function getLastRules({ config, paths, babelOptions }) {
   return [
     {
       test: /\.html$/,
@@ -119,7 +119,7 @@ export function getLastRules({ paths, babelOptions }) {
         },
       ],
     },
-  ];
+  ].concat(config.extraLoaders || []);
 }
 
 export function getCSSRules(env, { config, paths, cssLoaders, theme }) {
