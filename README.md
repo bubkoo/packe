@@ -10,7 +10,7 @@
 
 ## Feature
 
-- Support `*.js` entry file
+- Support `*.jsx` entry file
 
 
 ## Install
