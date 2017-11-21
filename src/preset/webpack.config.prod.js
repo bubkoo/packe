@@ -56,9 +56,9 @@ export default function (config, paths, distPath, options) {
     ...getResolve(config, paths),
     module: {
       rules: [
-        ...getFirstRules({ paths, babelOptions }),
+        ...getFirstRules({ config, paths, babelOptions }),
         ...getCSSRules('production', { config, paths, cssLoaders, theme }),
-        ...getLastRules({ paths, babelOptions }),
+        ...getLastRules({ config, paths, babelOptions }),
       ],
     },
     plugins: [
