@@ -11,6 +11,7 @@
 ## Feature
 
 - Support `*.jsx` entry file
+- extraLoaders
 
 
 ## Install
