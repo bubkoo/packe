@@ -2,7 +2,7 @@ import { join } from 'path';
 import { existsSync } from 'fs';
 import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
-import CopyWebpackPlugin from 'copy-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin'; // eslint-disable-line
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import noamalizePath from '../utils/noamalizePath';
 
