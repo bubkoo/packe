@@ -270,7 +270,7 @@ export function getCSSRules(env, { config, paths, cssLoaders, theme }) {
         ...item,
         options: {
           ...item.options,
-          // minimize: true,
+          minimize: true,
         },
       }));
       rule.use = ExtractTextPlugin.extract({
