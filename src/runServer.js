@@ -153,6 +153,9 @@ function runDevServer(port) {
     clientLogLevel: 'none',
     publicPath: getPublicPath(finalConfig),
     contentBase: paths.appPublic,
+    headers: {
+      'access-control-allow-origin': '*',
+    },
     watchOptions: {
       ignored: /node_modules/,
     },
